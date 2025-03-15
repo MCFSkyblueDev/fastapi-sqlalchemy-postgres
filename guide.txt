@@ -1,0 +1,55 @@
+pip freeze > requirements.txt
+
+Create env for project
+    - python3 -m venv venv
+    - .\venv\Scripts\activate (or source ./venv/Scripts/activate)
+
+Run
+    -  uvicorn app.main:app --host 0.0.0.0 --port 7010 --reload
+
+Stop 
+    -  tasklist | findstr "uvicorn"
+    -  taskkill /F /PID <PID>
+
+Install package
+    -  pip install "fastapi[standard]"
+    -  pip install sqlalchemy pydantic python-jose
+    -  pip install passlib[bcrypt]
+
+Migration
+    -  pip install alembic
+    -  alembic init alembic
+    -  Create function to get all models in models/__init__.py
+    -  In alembic/env.py
+        +  from app.config.database import Base
+        +  from app.models import *
+        +  config.set_main_option("sqlalchemy.url", Config.SQLALCHEMY_DATABASE_URL)
+        +  target_metadata = Base.metadata
+    -  alembic revision --autogenerate -m "Initial migration"
+    -  alembic upgrade head
+
+
+Fix default error 
+    -  lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+       version = _bcrypt.__about__.__version__
+       AttributeError: module 'bcrypt' has no attribute '__about__'
+
+Get token from request (3 ways)
+    -  oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+        +   def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db),):
+    -   api_key_header = APIKeyHeader(name="Authorization", auto_error=True)
+        +   def get_current_user(token: Annotated[str, Depends(api_key_header)], db: Session = Depends(get_db),):
+    -   security = HTTPBearer()
+        +   def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db),):
+                token = credentials.credentials
+    
+
+Docker
+    -   docker exec -it fastapi_pgadmin env | grep PGADMIN
+        +   -it:  -i (interactive): Keeps the input open (stdin). -t (TTY): Allocates a pseudo-terminal for better output display.
+        +   fastapi_pgadmin: The name of the container where the command will be executed.
+        +   env: Lists all environment variables inside the container.
+        +   | grep PGADMIN : | (pipe): Passes the output of the env command to the grep command.  grep PGADMIN: Filters and displays only lines containing "PGADMIN".
+    -   docker rmi -f $(docker images -aq) : delete all images
+
+
