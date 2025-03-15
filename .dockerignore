@@ -1,0 +1,27 @@
+# Exclude files and directories from the Docker image
+
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environments
+venv/
+env/
+*.venv
+
+# Ignore local environment files
+.env
+*.env
+
+# Ignore Git and editor-related files
+.git/
+.gitignore
+.DS_Store
+.vscode/
+.idea/
+
+# Ignore logs and unnecessary system files
+*.log
+*.swp
+*.swo
+*.bak
