@@ -9,8 +9,6 @@ class ItemService:
         self.db = db
         
     def create_item(self, item : ItemCreate, owner_id : int):
-    
-    
         try:
             new_item = ItemModel(
                 name=item.name, description=item.description, owner_id=owner_id

@@ -51,5 +51,6 @@ Docker
         +   env: Lists all environment variables inside the container.
         +   | grep PGADMIN : | (pipe): Passes the output of the env command to the grep command.  grep PGADMIN: Filters and displays only lines containing "PGADMIN".
     -   docker rmi -f $(docker images -aq) : delete all images
+    -    docker exec -it fastapi_app (+ alembic command)
 
 

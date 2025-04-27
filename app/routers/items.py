@@ -1,7 +1,9 @@
 
 from typing import Annotated
 from fastapi import APIRouter, Depends, File, UploadFile
+from app.decorators import check_role
 from app.dependencies import get_current_user, get_item_service
+from app.enums.roles import Role
 from app.models.user import UserModel
 from app.schemas.item import ItemCreate
 from app.services.item import ItemService
@@ -15,6 +17,7 @@ class ItemRouter:
         
     def add_routes(self):
         @self.router.post("/create-item")
+        @check_role([Role.USER])
         def create_item(item: ItemCreate,
                         user: UserModel = Depends(get_current_user),
                         item_service: ItemService = Depends(get_item_service)):
